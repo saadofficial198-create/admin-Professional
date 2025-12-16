@@ -1,0 +1,133 @@
+.admin-container {
+  display: flex;
+}
+
+.sidebar .logo {
+  width: 147px;
+  padding-bottom: 40px;
+}
+
+aside.sidebar {
+  min-width: 120px;
+  width: 100%;
+  max-width: 300px;
+  min-height: 300px;
+  height: 100vh;
+  max-height: 100vh;
+  padding: 38px 28px;
+  border-right: 1px solid #37446b30;
+  box-shadow: #010511ad 0px 8px 24px;
+  position: sticky;
+  top: 0;
+}
+
+.sidebar ul {
+  list-style: none;
+}
+
+.sidebar>ul {
+  padding-top: 28px;
+}
+
+.sidebar ul li ul {
+  display: none;
+}
+
+.sidebar ul li ul.show {
+  display: block;
+}
+
+.sidebar ul li {
+  position: relative;
+  transition: 0.3s;
+  border-radius: 4px;
+  padding: 2.5px 0;
+}
+
+.sidebar ul li a {
+  font-size: 14px;
+  line-height: 14px;
+  text-decoration: none;
+  color: var(--neutral-color-400);
+  text-transform: capitalize;
+  transition: 0.3s;
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  min-height: 37px;
+  height: 100%;
+  align-items: center;
+}
+
+.sidebar ul>li.active p-arrow {
+  transform: rotate(-90deg);
+}
+
+.sidebar ul>li a:hover,
+.sidebar ul>li a:hover .icon {
+  transition: 0.3s;
+  color: var(--neutral-color-100);
+}
+
+.p-arrow {
+  position: absolute;
+  right: 10px;
+  transform: rotate(-90deg);
+}
+
+.sidebar ul>li.active>a,
+.sidebar ul>li.active>a .icon {
+  color: var(--primary-color-1);
+}
+
+.sidebar ul>li.active .p-arrow {
+  transform: rotate(0);
+}
+
+.sidebar ul>li>ul>li a {
+  border-radius: 4px;
+  padding-left: 14px;
+}
+
+.sidebar ul>li>ul>li:hover a {
+  background: var(--neutral-color-700);
+  color: var(--white-color);
+}
+
+.sidebar ul>li>ul>li.active a {
+  border-left: 4px solid var(--primary-color-1);
+  color: var(--white-color);
+  background: var(--neutral-color-700);
+}
+
+/* Account */
+img.account {
+  width: 32px;
+  height: 32px;
+  border-radius: 50px;
+  border: 0.6px solid var(--primary-color-1);
+  box-shadow: #cb3cff99 0px 0px 16px 0px;
+}
+
+.account-setting h5 {
+  color: var(--white-color);
+}
+
+ul.settings {
+  position: absolute;
+  bottom: 38px;
+  width: 243px;
+}
+
+ul.settings {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 38px 28px;
+  border-top: 1px solid rgb(255 255 255 / 20%);
+}
+
+ul.settings li:first-child {
+  padding-bottom: 15px;
+}

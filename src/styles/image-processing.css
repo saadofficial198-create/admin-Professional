@@ -1,0 +1,71 @@
+.image-upload-processing {
+        position: fixed;
+        bottom: 30px;
+        right: 40px;
+        width: 100%;
+        max-width: 334px;
+        height: auto;
+        background: var(--secondary-color-1);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 0;
+        overflow: hidden;
+}
+.db-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 10px;
+        background-color: var(--neutral-color-700);
+        
+}
+.image-upload-processing ul li {list-style: none;display: flex;align-items: center;justify-content: space-between;padding: 5px 10px;}
+.image-upload-processing ul li > div {
+        display:flex;
+        gap: 10px;
+        align-items: center;
+}
+.image-upload-processing ul li span {
+        font-size:14px;
+        line-height:134%;
+}
+.image-upload-processing ul {
+        padding:10px 0;
+}
+.icon.processing {
+  animation: spin 1s linear infinite;
+  transform-origin: center center;
+}
+
+/* keyframes */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* slower */
+.icon.processing.slow { animation-duration: 2s; }
+
+/* smoother (ease) */
+.icon.processing.smooth { animation-timing-function: ease-in-out; }
+
+/* pause on hover */
+/* .Processing:hover .spin-icon { animation-play-state: paused; } */
+
+.dropdown-ul {
+    max-height: 1000px;
+    overflow: hidden;
+    padding: 10px 0;
+    border-top: 0.6px solid var(--border-color);
+    transition: 
+        max-height 0.35s ease,
+        padding 0.35s ease;
+}
+
+/* smooth rotate arrow */
+.arrow-icon {
+    transition: transform 0.35s ease;
+}
+.arrow-icon.rotate {
+    transform: rotate(180deg);
+}
