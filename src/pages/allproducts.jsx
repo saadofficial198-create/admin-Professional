@@ -20,7 +20,7 @@ const AllProducts = () => {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:7000/all-products')
+    fetch(`${process.env.REACT_APP_BACKEND_API_URL}/all-products`)
       .then(res => res.json())
       .then(res => {
         setData(res);

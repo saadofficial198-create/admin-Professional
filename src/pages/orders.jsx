@@ -19,7 +19,7 @@ const Orders = () => {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:7000/all-orders")
+    fetch(`${process.env.REACT_APP_BACKEND_API_URL}/all-orders`)
       .then(res => res.json())
       .then(res => {
         setData(res);

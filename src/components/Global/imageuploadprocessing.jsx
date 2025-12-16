@@ -23,7 +23,7 @@ const ImageUploadProcessing = ({ files = [], setFiles }) => {
                 formData.append("names", file.file.name);
 
                 try {
-                    const res = await fetch("http://localhost:7000/upload-media", {
+                    const res = await fetch(`${process.env.REACT_APP_BACKEND_API_URL}/upload-media`, {
                         method: "POST",
                         body: formData,
                     });

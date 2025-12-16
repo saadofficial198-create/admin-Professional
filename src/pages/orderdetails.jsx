@@ -16,7 +16,7 @@ export default function OrderDetails() {
   ];
   const currentStatus = orderDetails?.status;
   useEffect(() => {
-    fetch(`http://localhost:7000/order-details/${id}`)
+    fetch(`${process.env.REACT_APP_BACKEND_API_URL}/order-details/${id}`)
       .then(res => res.json())
       .then(data => setOrderDetails(data.order))
       .catch(err => console.error(err));
@@ -39,7 +39,7 @@ export default function OrderDetails() {
     const status = e.currentTarget.getAttribute("data-status");
     setSelectedStatus(status);
     setIsWorking(true);
-    fetch(`http://localhost:7000/update-order-status/${id}/${status}`, {
+    fetch(`${process.env.REACT_APP_BACKEND_API_URL}/update-order-status/${id}/${status}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ status }),

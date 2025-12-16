@@ -68,7 +68,7 @@ const Product = () => {
     };
     console.log(payload);
     try {
-      const res = await fetch("http://localhost:7000/add-new-product", {
+      const res = await fetch(`${process.env.REACT_APP_BACKEND_API_URL}/add-new-product`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -90,7 +90,7 @@ const Product = () => {
   const fetchImages = async () => {
     try {
       setOverlauy((prev) => ({ ...prev, display: "block" }));
-      const response = await fetch("http://localhost:7000/media");
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_API_URL}/media`);
       const data = await response.json();
       setImages(data.products || data || []);
       console.log("Fetched images:", data);

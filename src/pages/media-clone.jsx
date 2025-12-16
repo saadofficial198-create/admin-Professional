@@ -23,7 +23,7 @@ const MediaClone = () => {
 
   // Get All media
   useEffect(() => {
-    fetch("https://ecom-2025.onrender.com/media")
+    fetch(`${process.env.REACT_APP_BACKEND_API_URL}/media`)
       .then(res => res.json())
       .then(res => setData(res))
       .catch(err => console.error("Error fetching media:", err));
