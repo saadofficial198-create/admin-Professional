@@ -22,7 +22,7 @@ const Orders = () => {
     fetch(`${process.env.REACT_APP_BACKEND_API_URL}/all-orders`)
       .then(res => res.json())
       .then(res => {
-        setData(res);
+        setData(res.data || []); 
       })
       .catch(err => {
         console.error("Error fetching products:", err);
