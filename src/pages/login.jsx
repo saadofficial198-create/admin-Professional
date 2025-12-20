@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { handleSubmit } from '../components/actions/hendleSubmiy';
 const containerStyle = {
   minHeight: '100vh',
   display: 'flex',
@@ -60,37 +61,6 @@ const buttonStyle = {
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const res = await fetch(`${process.env.REACT_APP_BACKEND_API_URL}/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        alert(data.message || "Login failed");
-        return;
-      }
-
-      // Save token safely
-      localStorage.setItem("token", data.token);
-      alert("Login successful!");
-
-      // Redirect or load admin dashboard
-      window.location.href = "/"; // adjust route
-
-    } catch (err) {
-      console.error(err);
-      alert("Server error");
-    }
-  };
-
   return (
     <div style={containerStyle}>
       <div style={cardStyle}>
@@ -101,7 +71,7 @@ const Login = () => {
 
           <label style={labelStyle}>Password</label>
           <input type="password" placeholder="Enter password" style={inputStyle} value={password} onChange={(e) => setPassword(e.target.value)} />
-          <button type="submit" style={buttonStyle} onClick={handleSubmit}>Login</button>
+          <button type="submit" style={buttonStyle} onClick={(e) => handleSubmit(e, email, password)}>Login</button>
         </form>
       </div>
     </div>
