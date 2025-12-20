@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { handleSubmit } from '../components/actions/hendleSubmiy';
+import { handleSubmit } from '../components/actions/hendleSubmit';
 const containerStyle = {
   minHeight: '100vh',
   display: 'flex',
