@@ -5,6 +5,8 @@ import useOrderDetailsProducts from "../components/actions/orderdetailsproducts"
 import { getResizedCloudinaryUrl } from "../utils/cloudinary"
 import { Search, ThreeDots, Processing, DoubleCheck } from "../assets/icons";
 import { initDropdowns } from "../utils/dropdown";
+import { getOrderDetails, updateOrderStatus } from "../services/api.js";
+
 export default function OrderDetails() {
   let [isWorking, setIsWorking] = useState(false);
   const { id } = useParams();
@@ -16,10 +18,9 @@ export default function OrderDetails() {
   ];
   const currentStatus = orderDetails?.status;
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_BACKEND_API_URL}/order-details/${id}`)
-      .then(res => res.json())
+    getOrderDetails(id)
       .then(data => setOrderDetails(data.order))
-      .catch(err => console.error(err));
+      .catch((err) => console.error("Error fetching order details:", err))
   }, [id]);
   useEffect(() => {
     initDropdowns();
@@ -39,12 +40,7 @@ export default function OrderDetails() {
     const status = e.currentTarget.getAttribute("data-status");
     setSelectedStatus(status);
     setIsWorking(true);
-    fetch(`${process.env.REACT_APP_BACKEND_API_URL}/update-order-status/${id}/${status}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status }),
-    })
-      .then(res => res.json())
+    updateOrderStatus(id, status)
       .then(data => {
         setOrderDetails(prevDetails => ({
           ...prevDetails,

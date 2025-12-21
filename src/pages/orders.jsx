@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom"; // Import Link for navigation
+import { getAllOrders } from "../services/api.js";
 import {
   Search,
   User,
@@ -19,17 +20,9 @@ const Orders = () => {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_BACKEND_API_URL}/all-orders`)
-      .then(res => res.json())
-      .then(res => {
-        setData(res.data || []); 
-      })
-      .catch(err => {
-        console.error("Error fetching products:", err);
-      })
-      .finally(() => {
-        console.log("Fetch completed");
-      });
+    getAllOrders()
+      .then((orders) => setData(orders))
+      .catch((error) => console.error("Error fetching orders:", error));
   }, []);
 
   // const handleDelete = (id) => {

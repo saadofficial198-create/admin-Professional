@@ -17,7 +17,6 @@ import EditProduct from "../pages/edit-product";
 import Login from "../pages/login";
 import Order from "../pages/orders";
 import OrderDetails from "../pages/orderdetails";
-import MediaClone from "../pages/media-clone";
 import NotFound from "../pages/NotFound";
 
 function Routers() {
@@ -38,13 +37,12 @@ function Routers() {
         >
           <Route path="/" element={<Dashboard />} />
           <Route path="/users" element={<Users />} />
-          <Route path="/media-clone" element={<Media />} />
+          <Route path="/media" element={<Media />} />
           <Route path="/add-new-product" element={<AddNewProduct />} />
           <Route path="/all-products" element={<AllProducts />} />
           <Route path="/edit-product/:id" element={<EditProduct />} />
           <Route path="/orders" element={<Order />} />
           <Route path="/order-details/:id" element={<OrderDetails />} />
-          <Route path="/media" element={<MediaClone />} />
           <Route path="/settings" element={<Settings />} />
 
           {/* ✅ PRIVATE 404 (WITH SIDEBAR) */}

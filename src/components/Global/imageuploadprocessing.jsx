@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Processing, DoubleCheck, Arrow, Image } from "../../assets/icons";
+import { uploadMedias } from "../../services/api.js";
 import "../../styles/image-processing.css";
 
 const ImageUploadProcessing = ({ files = [], setFiles }) => {
@@ -23,19 +24,13 @@ const ImageUploadProcessing = ({ files = [], setFiles }) => {
                 formData.append("names", file.file.name);
 
                 try {
-                    const res = await fetch(`${process.env.REACT_APP_BACKEND_API_URL}/upload-media`, {
-                        method: "POST",
-                        body: formData,
-                    });
-
-                    const data = await res.json();
-
+                    const data = await uploadMedias(formData);
                     setFiles(prev => {
                         const updated = [...prev];
-                        updated[index].status =
-                            res.ok && data.uploaded ? "completed" : "failed";
+                        updated[index].status = data.uploaded ? "completed" : "failed";
                         return updated;
                     });
+
                 } catch (err) {
                     console.error("Upload error:", err);
 

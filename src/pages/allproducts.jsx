@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom"; // Import Link for navigation
 import { getResizedCloudinaryUrl } from "../utils/cloudinary";
+import { getAllProducts } from "../services/api";
 import {
   Search,
   User,
@@ -20,17 +21,9 @@ const AllProducts = () => {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_ALL_PRODUCTS_BACKEND_API_URL}`)
-      .then(res => res.json())
-      .then(res => {
-        setData(res);
-      })
-      .catch(err => {
-        console.error("Error fetching products:", err);
-      })
-      .finally(() => {
-        console.log("Fetch completed");
-      });
+    getAllProducts()
+      .then((products) => setData(products))
+      .catch((error) => console.error("Error fetching products:", error));
   }, []);
 
   const handleDelete = (id) => {
@@ -153,8 +146,8 @@ const AllProducts = () => {
                     )}
                     alt={product.name}
                     className="table-img"
-                    />
-                    {product.name}
+                  />
+                  {product.name}
                 </div>
                 {/* <div className="table-cell">
                   <img

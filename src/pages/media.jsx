@@ -1,155 +1,185 @@
-import React, { useEffect, useState } from "react";
+import "../styles/media.css"
+import { useRef, useEffect, useState } from "react";
+import { Link } from "react-router-dom"; // Import Link for navigation
+import { getResizedCloudinaryUrl } from "../utils/cloudinary.js";
+import { formatFileSize } from "../utils/formatfilesize.js";
+import { getAllMedias } from "../services/api.js";
+import {
+  Search,
+  CloudUpload,
+  Bin,
+  Pencil,
+  ArrowLeft,
+  ArrowRight,
+  map,
+  Check2
+} from "../assets/icons/index.js";
+
+import ImageUploadProcessing from "../components/Global/imageuploadprocessing.jsx";
 
 const Media = () => {
-  const [images, setImages] = useState([]);
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [showPopup, setShowPopup] = useState(false);
-  const [uploadFile, setUploadFile] = useState(null);
-  const [imageName, setImageName] = useState("");
+  const fileInputRef = useRef(null);
+  const [files, setFiles] = useState([]);
+  const [data, setData] = useState([]);
 
-  // Fetch images
-  const fetchImages = async () => {
-    try {
-      const response = await fetch("http://localhost:7000/media");
-      const data = await response.json();
-      setImages(data.products || data || []);
-    } catch (error) {
-      console.error("Error fetching images:", error);
-    }
-  };
-
+  // Get All media
   useEffect(() => {
-    fetchImages();
+    getAllMedias()
+      .then((medias) => setData(medias))
+      .catch((error) => console.error("Error fetching medias:", error));
   }, []);
 
-  // Handle upload
-  const handleUpload = async () => {
-    if (!uploadFile || !imageName.trim()) {
-      alert("Please select an image and enter a name!");
-      return;
-    }
+  // When user selects images
+  const handleFilesChange = (e) => {
+    const selected = Array.from(e.target.files);
 
-    const formData = new FormData();
-    formData.append("image", uploadFile);
-    formData.append("name", imageName.trim());
+    const formatted = selected.map(file => ({
+      id: crypto.randomUUID(),
+      file,
+      name: file.name,
+      preview: URL.createObjectURL(file),
+      status: "pending" // child will upload
+    }));
 
-    try {
-      const response = await fetch("http://localhost:7000/upload-media", {
-        method: "POST",
-        body: formData,
-      });
-      const data = await response.json();
-
-      if (response.ok && data.newImage && data.newImage.image) {
-        setImages((prev) => [data.newImage, ...prev]);
-      } else {
-        console.error("Uploaded image data is missing or broken:", data);
-        alert("Upload succeeded but response data was broken. Please refresh.");
-      }
-    } catch (error) {
-      console.error("Upload error:", error);
-      alert("Upload failed. Please try again.");
-    }
-
-    setShowPopup(false);
-    setUploadFile(null);
-    setImageName("");
+    setFiles(formatted);
   };
 
   return (
-    <div style={containerStyle}>
-      {/* Button */}
-      <div style={addNewButtonWrapper}>
-        <button onClick={() => setShowPopup(true)} style={addButtonStyle}>
-          + Add New
-        </button>
+    <div className="container media">
+      {/* Head */}
+      <div className="page-header">
+        <h1>Media</h1>
+        <div className="search">
+          <Search className="icon" />
+          <input type="text" placeholder="Search for..." />
+        </div>
+        <button>Create Upload</button>
       </div>
-
-      {/* Gallery */}
-      <div style={galleryStyle}>
-        {images.length > 0 ? (
-          images.map((img, index) =>
-            img?.image ? (
-              <div
-                key={img._id || index}
-                style={imageBoxStyle}
-                onClick={() => setSelectedImage(img)}
-              >
-                <img
-                  src={img.image}
-                  alt={img.name || "No Name"}
-                  style={imageStyle}
-                />
-              </div>
-            ) : null
-          )
-        ) : (
-          <p>No images available</p>
-        )}
-      </div>
-
-      {/* Details */}
-      <div style={detailsStyle}>
-        {selectedImage ? (
-          <div>
-            <h3>Image Details</h3>
-            <img
-              src={selectedImage.image}
-              alt={selectedImage.name}
-              style={detailImageStyle}
-            />
-            <p><strong>Name:</strong> {selectedImage.name}</p>
-            <p><strong>Price:</strong> ${selectedImage.price || "N/A"}</p>
-            <p><strong>ID:</strong> {selectedImage._id}</p>
-            <p><strong>URL:</strong> <a href={selectedImage.image} target="_blank" rel="noopener noreferrer">{selectedImage.image}</a></p>
-          </div>
-        ) : (
-          <p>Select an image to view details</p>
-        )}
-      </div>
-
-      {/* Popup */}
-      {showPopup && (
-        <div style={popupOverlay}>
-          <div style={popupStyle}>
-            <h2>Upload New Image</h2>
+      <div className="medias d-flex gap-30">
+        <div className="media-files d-flex flex-column gap-30">
+          {/* Upload Files */}
+          <div
+            id="uploadfiles"
+            className="upload-file"
+            onClick={() => fileInputRef.current.click()}
+          >
             <input
-              type="text"
-              placeholder="Enter image name"
-              value={imageName}
-              onChange={(e) => setImageName(e.target.value)}
-              style={inputStyle}
-            />
-            <br /><br />
-            <input
+              className="d-none"
               type="file"
               accept="image/*"
-              onChange={(e) => setUploadFile(e.target.files[0])}
-              style={inputStyle}
+              multiple
+              ref={fileInputRef}
+              onChange={handleFilesChange}
+            // onChange={(e) => setUploadFile(e.target.files[0])}
             />
-            <br /><br />
-            <button onClick={handleUpload} style={uploadButtonStyle}>Upload</button>
-            <button onClick={() => setShowPopup(false)} style={cancelButtonStyle}>Cancel</button>
+            <div className="upload-icon">
+              <CloudUpload className="icon white" />
+            </div>
+            <h5><strong>Click here</strong> to upload file or drag.</h5>
+            <p>Supported Format: SVG, JPG, PNG (10mb each)</p>
+          </div>
+          {/* Table */}
+          <div className="table-wrapper">
+            <div className="table-container">
+              <div className="table-head d-flex between j-center">
+                <h4 className="white">All Medias</h4>
+                <p>
+                  <b>1-10</b> of 120
+                </p>
+              </div>
+
+              <div className="table media">
+                {/* Table Head */}
+                <div className="table-row table-head">
+                  <div className="table-cell checkbox">
+                    <input type="checkbox" className="table-checkbox" />
+                  </div>
+                  <div className="table-cell">File Name</div>
+                  <div className="table-cell">File Size</div>
+                  <div className="table-cell">Last Modified</div>
+                  <div className="table-cell"></div>
+                </div>
+
+                {/* Table Body */}
+                {data.map((media) => (
+                  <div className="table-row" key={media._id}>
+                    <div className="table-cell checkbox">
+                      <input type="checkbox" className="table-checkbox" />
+                    </div>
+                    <div className="table-cell product-image">
+                      <img
+                        src={getResizedCloudinaryUrl(media.url, 90, 90)}
+                        alt={media.name}
+
+                        className="table-img"
+                      />
+                      {media.name}
+                    </div>
+                    {/* <div className="table-cell">
+                  <img
+                    src={getResizedCloudinaryUrl(
+                      product.image ? product.image : product.variants[0].image,
+                      90,
+                      80
+                    )}
+                    alt={product.name}
+                    className="table-img"
+                  />
+
+                </div> */}
+                    <div className="table-cell">
+                      {formatFileSize(media.size)}
+                    </div>
+                    <div className="table-cell">
+                      {media?.upload.month[1]}, {media?.upload.day[0]}, 20{media?.upload.year}
+                    </div>
+                    <div className="table-cell action">
+                      <Link to={`/edit-product/${media._id}`}>
+                        <Pencil className="icon icon-15 c-pointer" />
+                      </Link>
+                      <Link to={`/edit-product/${media._id}`}>
+                        <Bin className="icon icon-15 c-pointer bin" />
+                      </Link>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Table Foot */}
+            <div className="table-foot d-flex between j-center">
+              <p className="white">
+                <b>1-10</b> of 120
+              </p>
+              <div className="d-flex j-center gap-10">
+                <button className="pagination">
+                  <ArrowLeft className="icon icon-14" />
+                </button>
+                <button className="pagination">
+                  <ArrowRight className="icon icon-14" />
+                </button>
+              </div>
+            </div>
           </div>
         </div>
+        <div className="storage">
+          <h3 className="hrad-cell white"> Storage</h3>
+          <div className="storage-chart">
+            <span className="persent">50%</span>
+            <span className="storage-have">Used of 25 GB</span>
+
+            <div className="storage-usage"></div>
+            <div className="storage-left"></div>
+          </div>
+        </div>
+      </div>
+      {files.length > 0 && (
+        <ImageUploadProcessing
+          files={files}
+          setFiles={setFiles}
+        />
       )}
     </div>
   );
 };
-
-// Styles
-const containerStyle = { display: "flex", padding: "20px" };
-const addNewButtonWrapper = { flex: "0 0 150px", marginRight: "20px", display: "flex", alignItems: "start" };
-const galleryStyle = { flex: "2", display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(120px, 1fr))", gap: "15px" };
-const imageBoxStyle = { border: "1px solid #ccc", padding: "5px", borderRadius: "8px", cursor: "pointer", backgroundColor: "#f9f9f9" };
-const imageStyle = { width: "100%", height: "auto", borderRadius: "4px" };
-const detailsStyle = { flex: "1", marginLeft: "20px", padding: "20px", border: "1px solid #ddd", borderRadius: "8px", backgroundColor: "#fafafa" };
-const detailImageStyle = { width: "100%", height: "auto", marginBottom: "10px" };
-const addButtonStyle = { width: "150px", height: "150px", fontSize: "18px", backgroundColor: "#4CAF50", color: "#fff", border: "none", borderRadius: "10px", cursor: "pointer" };
-const popupOverlay = { position: "fixed", top: "0", left: "0", width: "100%", height: "100%", backgroundColor: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000 };
-const popupStyle = { backgroundColor: "#fff", padding: "30px", borderRadius: "10px", textAlign: "center", minWidth: "300px" };
-const inputStyle = { width: "100%", padding: "10px", marginBottom: "10px", borderRadius: "5px", border: "1px solid #ccc" };
-const uploadButtonStyle = { margin: "10px", padding: "10px 20px", backgroundColor: "#4CAF50", color: "#fff", border: "none", borderRadius: "5px", cursor: "pointer" };
-const cancelButtonStyle = { margin: "10px", padding: "10px 20px", backgroundColor: "#f44336", color: "#fff", border: "none", borderRadius: "5px", cursor: "pointer" };
-
 export default Media;
