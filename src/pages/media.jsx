@@ -3,7 +3,7 @@ import { useRef, useEffect, useState } from "react";
 import { Link } from "react-router-dom"; // Import Link for navigation
 import { getResizedCloudinaryUrl } from "../utils/cloudinary.js";
 import { formatFileSize } from "../utils/formatfilesize.js";
-import { getAllMedias } from "../services/api.js";
+import { getAllMedias, getCloudinaryDetials } from "../services/api.js";
 import {
   Search,
   CloudUpload,
@@ -21,12 +21,16 @@ const Media = () => {
   const fileInputRef = useRef(null);
   const [files, setFiles] = useState([]);
   const [data, setData] = useState([]);
+  const [mediaDetails, setMediaDetails] = useState({});
 
   // Get All media
   useEffect(() => {
     getAllMedias()
       .then((medias) => setData(medias))
       .catch((error) => console.error("Error fetching medias:", error));
+    getCloudinaryDetials()
+      .then((data) => setMediaDetails(data))
+      .catch((err) => console.error("Error fetching Cloudinary details:", err));
   }, []);
 
   // When user selects images
@@ -38,7 +42,7 @@ const Media = () => {
       file,
       name: file.name,
       preview: URL.createObjectURL(file),
-      status: "pending" // child will upload
+      status: "pending"
     }));
 
     setFiles(formatted);
@@ -171,6 +175,7 @@ const Media = () => {
             <div className="storage-usage"></div>
             <div className="storage-left"></div>
           </div>
+          <div className="s-divider"></div>
         </div>
       </div>
       {files.length > 0 && (

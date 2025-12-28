@@ -74,3 +74,13 @@ export const getsProductData = async (products) => {
   })
   return res.json();
 }
+// Get Cloudinary Detials
+export const getCloudinaryDetials = async () => {
+  const res = await fetch(`${process.env.REACT_APP_BACKEND_API_GET_CLOUDINARY_DETAILS_URL}`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${getToken()}`,
+    },
+  })
+  return res.json();
+}
