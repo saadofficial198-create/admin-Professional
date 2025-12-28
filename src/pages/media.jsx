@@ -22,6 +22,10 @@ const Media = () => {
   const [files, setFiles] = useState([]);
   const [data, setData] = useState([]);
   const [mediaDetails, setMediaDetails] = useState({});
+  const usedPercentage = mediaDetails?.totalUsed && mediaDetails?.limit ? (mediaDetails.totalUsed / mediaDetails.limit) * 100 : 0;
+  const visiblePercentage = usedPercentage > 0 && usedPercentage < 2 ? 2 : usedPercentage;
+  const rotation = -180 + (visiblePercentage / 100) * 180;
+
 
   // Get All media
   useEffect(() => {
@@ -32,11 +36,9 @@ const Media = () => {
       .then((data) => setMediaDetails(data))
       .catch((err) => console.error("Error fetching Cloudinary details:", err));
   }, []);
-
-  // When user selects images
+  console.log("Media Details:", mediaDetails);
   const handleFilesChange = (e) => {
     const selected = Array.from(e.target.files);
-
     const formatted = selected.map(file => ({
       id: crypto.randomUUID(),
       file,
@@ -169,10 +171,14 @@ const Media = () => {
         <div className="storage">
           <h3 className="hrad-cell white"> Storage</h3>
           <div className="storage-chart">
-            <span className="persent">50%</span>
-            <span className="storage-have">Used of 25 GB</span>
-
-            <div className="storage-usage"></div>
+            <span className="persent">
+              {usedPercentage.toFixed(1)}%
+            </span>
+            <span className="storage-have">
+              {formatFileSize(mediaDetails.totalUsed || 0)} Used of{" "}
+              {formatFileSize(mediaDetails.limit || 0)}
+            </span>
+            <div className="storage-usage" style={{ transform: `rotate(${rotation}deg)` }}></div>
             <div className="storage-left"></div>
           </div>
           <div className="s-divider"></div>
