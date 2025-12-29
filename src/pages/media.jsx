@@ -36,7 +36,6 @@ const Media = () => {
       .then((data) => setMediaDetails(data))
       .catch((err) => console.error("Error fetching Cloudinary details:", err));
   }, []);
-  console.log("Media Details:", mediaDetails);
   const handleFilesChange = (e) => {
     const selected = Array.from(e.target.files);
     const formatted = selected.map(file => ({

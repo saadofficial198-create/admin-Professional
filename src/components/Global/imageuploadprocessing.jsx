@@ -4,20 +4,24 @@ import { uploadMedias } from "../../services/api.js";
 import "../../styles/image-processing.css";
 
 const ImageUploadProcessing = ({ files = [], setFiles }) => {
+    const uploadingRef = useRef(new Set());
     const [open, setOpen] = useState(true);
     const listRef = useRef(null);
     // Upload each pending file
     useEffect(() => {
-        files.forEach((file, index) => {
-            if (file.status !== "pending") return; // upload only once
+        files.forEach((file) => {
+            if (file.status !== "pending") return;
+            if (uploadingRef.current.has(file.id)) return;
+            uploadingRef.current.add(file.id);
+
 
             const uploadFile = async () => {
                 // Set status → processing
-                setFiles(prev => {
-                    const updated = [...prev];
-                    updated[index].status = "processing";
-                    return updated;
-                });
+                setFiles(prev =>
+                    prev.map(f =>
+                        f.id === file.id ? { ...f, status: "processing" } : f
+                    )
+                );
 
                 const formData = new FormData();
                 formData.append("media", file.file);
@@ -25,20 +29,22 @@ const ImageUploadProcessing = ({ files = [], setFiles }) => {
 
                 try {
                     const data = await uploadMedias(formData);
-                    setFiles(prev => {
-                        const updated = [...prev];
-                        updated[index].status = data.uploaded ? "completed" : "failed";
-                        return updated;
-                    });
-
+                    setFiles(prev =>
+                        prev.map(f =>
+                            f.id === file.id
+                                ? { ...f, status: data.uploaded ? "completed" : "failed" }
+                                : f
+                        )
+                    );
+                    uploadingRef.current.delete(file.id);
                 } catch (err) {
                     console.error("Upload error:", err);
-
-                    setFiles(prev => {
-                        const updated = [...prev];
-                        updated[index].status = "failed";
-                        return updated;
-                    });
+                    setFiles(prev =>
+                        prev.map(f =>
+                            f.id === file.id ? { ...f, status: "failed" } : f
+                        )
+                    );
+                    uploadingRef.current.delete(file.id);
                 }
             };
 
