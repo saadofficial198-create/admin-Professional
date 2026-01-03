@@ -10,6 +10,9 @@ import { ReactComponent as DoubleCheck } from './double-check.svg';
 import { ReactComponent as Heart } from './heart.svg';
 import { ReactComponent as Home } from './home.svg';
 import { ReactComponent as Image } from './image.svg';
+import { ReactComponent as Doc } from './keep-DOC.svg';
+import { ReactComponent as Jpg } from './keep-JPG.svg';
+import { ReactComponent as Mp4 } from './keep-MP4.svg';
 import { ReactComponent as Map } from './map.svg';
 import { ReactComponent as Message } from './message.svg';
 import { ReactComponent as Pencil } from './pencil.svg';
@@ -36,6 +39,9 @@ export {
   Heart,
   Home,
   Image,
+  Doc,
+  Jpg,
+  Mp4,
   Map,
   Message,
   Pencil,

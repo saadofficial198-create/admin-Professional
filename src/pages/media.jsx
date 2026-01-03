@@ -11,8 +11,7 @@ import {
   Pencil,
   ArrowLeft,
   ArrowRight,
-  map,
-  Check2
+  Jpg,
 } from "../assets/icons/index.js";
 
 import ImageUploadProcessing from "../components/Global/imageuploadprocessing.jsx";
@@ -36,17 +35,18 @@ const Media = () => {
       .then((data) => setMediaDetails(data))
       .catch((err) => console.error("Error fetching Cloudinary details:", err));
   }, []);
+
   const handleFilesChange = (e) => {
     const selected = Array.from(e.target.files);
     const formatted = selected.map(file => ({
       id: crypto.randomUUID(),
       file,
-      name: file.name,
+      name: file.name.replace(/\.[^.]+$/, ""),
       preview: URL.createObjectURL(file),
       status: "pending"
     }));
-
     setFiles(formatted);
+    console.log(formatted);
   };
 
   return (
@@ -60,7 +60,7 @@ const Media = () => {
         </div>
         <button>Create Upload</button>
       </div>
-      <div className="medias d-flex gap-30">
+      <div className="medias d-flex gap-30 j-top">
         <div className="media-files d-flex flex-column gap-30">
           {/* Upload Files */}
           <div
@@ -106,7 +106,7 @@ const Media = () => {
                 </div>
 
                 {/* Table Body */}
-                {data.map((media) => (
+                {data.slice(0, 10).map((media) => (
                   <div className="table-row" key={media._id}>
                     <div className="table-cell checkbox">
                       <input type="checkbox" className="table-checkbox" />
@@ -120,18 +120,6 @@ const Media = () => {
                       />
                       {media.name}
                     </div>
-                    {/* <div className="table-cell">
-                  <img
-                    src={getResizedCloudinaryUrl(
-                      product.image ? product.image : product.variants[0].image,
-                      90,
-                      80
-                    )}
-                    alt={product.name}
-                    className="table-img"
-                  />
-
-                </div> */}
                     <div className="table-cell">
                       {formatFileSize(media.size)}
                     </div>
@@ -181,6 +169,56 @@ const Media = () => {
             <div className="storage-left"></div>
           </div>
           <div className="s-divider"></div>
+          <div className="storage-details">
+            <div className="storage-items">
+              <div className="storage-item d-flex between j-bottom">
+                <div className="icon d-flex j-center gap-10 j-bottom">
+                  <Jpg className="icon" />
+                  <span className="name">Documents</span>
+                </div>
+                <span className="percentage">50%</span>
+              </div>
+              <div className="storage-percentage">
+                <div className="bar"></div>
+              </div>
+            </div>
+            <div className="storage-items">
+              <div className="storage-item d-flex between j-bottom">
+                <div className="icon d-flex j-center gap-10 j-bottom">
+                  <Jpg className="icon" />
+                  <span className="name">Images</span>
+                </div>
+                <span className="percentage">50%</span>
+              </div>
+              <div className="storage-percentage">
+                <div className="bar"></div>
+              </div>
+            </div>
+            <div className="storage-items">
+              <div className="storage-item d-flex between j-bottom">
+                <div className="icon d-flex j-center gap-10 j-bottom">
+                  <Jpg className="icon" />
+                  <span className="name">Videos</span>
+                </div>
+                <span className="percentage">50%</span>
+              </div>
+              <div className="storage-percentage">
+                <div className="bar"></div>
+              </div>
+            </div>
+            <div className="storage-items">
+              <div className="storage-item d-flex between j-bottom">
+                <div className="icon d-flex j-center gap-10 j-bottom">
+                  <Jpg className="icon" />
+                  <span className="name">Other</span>
+                </div>
+                <span className="percentage">50%</span>
+              </div>
+              <div className="storage-percentage">
+                <div className="bar"></div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       {files.length > 0 && (

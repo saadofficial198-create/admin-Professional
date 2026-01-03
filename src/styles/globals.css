@@ -432,6 +432,14 @@ button {
   align-items: center;
 }
 
+.j-top {
+  align-items: flex-start;
+}
+
+.j-bottom {
+  align-items: flex-end;
+}
+
 .d-flex.between {
   justify-content: space-between;
 }

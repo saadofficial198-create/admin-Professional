@@ -18,6 +18,7 @@ import Login from "../pages/login";
 import Order from "../pages/orders";
 import OrderDetails from "../pages/orderdetails";
 import NotFound from "../pages/NotFound";
+import Test from "../pages/test";
 
 function Routers() {
   return (
@@ -36,6 +37,7 @@ function Routers() {
           }
         >
           <Route path="/" element={<Dashboard />} />
+          <Route path="/test" element={<Test />} />
           <Route path="/users" element={<Users />} />
           <Route path="/media" element={<Media />} />
           <Route path="/add-new-product" element={<AddNewProduct />} />

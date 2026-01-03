@@ -1,4 +1,3 @@
-// generate-icons.js
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 
@@ -14,30 +13,64 @@ const toPascalCase = (str) =>
 const iconsDir = path.join(process.cwd(), 'src', 'assets', 'icons');
 const outputFile = path.join(iconsDir, 'index.js');
 
-// Filter SVG files
-const files = fs.readdirSync(iconsDir).filter(file => file.endsWith('.svg'));
+// Read SVG files
+const files = fs.readdirSync(iconsDir).filter(f => f.endsWith('.svg'));
 
-// 💡 Replace fill and stroke with "currentColor"
+// ---- COLOR PROCESSING ----
 files.forEach(file => {
+  if (file.startsWith('keep-')) return; // 🔒 keep original colors
+
   const filePath = path.join(iconsDir, file);
   let svgContent = fs.readFileSync(filePath, 'utf8');
 
-  // Replace fill and stroke with currentColor (skip fill="none")
-  svgContent = svgContent
-    .replace(/(fill|stroke)=["'](?!none)(.*?)["']/gi, '$1="currentColor"');
+  svgContent = svgContent.replace(
+    /(fill|stroke)=["'](?!none)(.*?)["']/gi,
+    '$1="currentColor"'
+  );
 
   fs.writeFileSync(filePath, svgContent);
 });
 
-// Generate imports & exports
-const imports = files.map(file => {
-  const name = toPascalCase(path.basename(file, '.svg'));
-  return `import { ReactComponent as ${name} } from './${file}';`;
+// ---- IMPORT / EXPORT NAME LOGIC ----
+const nameCounter = new Map();
+
+const imports = [];
+const exportNames = [];
+
+files.forEach(file => {
+  // remove keep- ONLY for variable name
+  const cleanName = file.startsWith('keep-')
+    ? file.replace(/^keep-/, '')
+    : file;
+
+  const rawName = path.basename(cleanName, '.svg').toLowerCase();
+  let baseName = toPascalCase(rawName);
+
+
+  // Handle duplicates
+  if (nameCounter.has(baseName)) {
+    const count = nameCounter.get(baseName) + 1;
+    nameCounter.set(baseName, count);
+    baseName = `${baseName}-${count}`;
+  } else {
+    nameCounter.set(baseName, 0);
+  }
+
+  imports.push(
+    `import { ReactComponent as ${baseName} } from './${file}';`
+  );
+
+  exportNames.push(baseName);
 });
 
-const exports = `export {\n  ${files.map(file => toPascalCase(path.basename(file, '.svg'))).join(',\n  ')}\n};\n`;
+const content = `
+${imports.join('\n')}
 
-const content = `${imports.join('\n')}\n\n${exports}`;
-fs.writeFileSync(outputFile, content);
+export {
+  ${exportNames.join(',\n  ')}
+};
+`;
 
-console.log('✅ icons/index.js generated and SVGs updated with currentColor!');
+fs.writeFileSync(outputFile, content.trim());
+
+console.log('✅ icons/index.js generated with keep-, color-safe & duplicate-safe exports!');

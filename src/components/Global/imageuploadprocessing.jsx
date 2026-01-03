@@ -53,11 +53,10 @@ const ImageUploadProcessing = ({ files = [], setFiles }) => {
     }, [files, setFiles]);
 
     const shortenFileName = (name) => {
-        const parts = name.split(".");
-        const ext = parts.pop();
-        const base = parts.join(".");
-        return base.substring(0, 15) + "...." + ext;
+        if (name.length <= 20) return name;
+        return name.substring(0, 20) + "...";
     };
+
 
     const completedCount = files.filter(f => f.status === "completed").length;
 
